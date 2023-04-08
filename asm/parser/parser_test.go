@@ -10,9 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHasMoreCommands(t *testing.T) {
-}
-
 func TestAdvance(t *testing.T) {
 	assert := assert.New(t)
 
