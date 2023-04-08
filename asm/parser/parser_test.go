@@ -13,25 +13,25 @@ import (
 func TestAdvance(t *testing.T) {
 	assert := assert.New(t)
 
-	f, _ := os.Open("a.asm")
+	f, _ := os.Open("../test.asm")
 	buf := bufio.NewReaderSize(f, 1024)
 
 	pg := NewPG(buf)
 
-	v, _ := pg.advance()
+	v, _ := pg.Advance()
 	assert.Equal("@i", v)
-	v, _ = pg.advance()
+	v, _ = pg.Advance()
 	assert.Equal("M=1", v)
-	v, _ = pg.advance()
+	v, _ = pg.Advance()
 	assert.Equal("@sum", v)
-	v, _ = pg.advance()
+	v, _ = pg.Advance()
 	assert.Equal("M=0", v)
-	v, _ = pg.advance()
+	v, _ = pg.Advance()
 	assert.Equal("M=0", v)
-	v, _ = pg.advance()
+	v, _ = pg.Advance()
 	assert.Equal("M=0", v)
 
-	v, err := pg.advance()
+	v, err := pg.Advance()
 	assert.Equal("", v)
 	assert.Equal(io.EOF, err)
 }

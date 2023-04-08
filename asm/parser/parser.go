@@ -29,7 +29,7 @@ const (
 
 const C_COMMAND_REGEXP = `(?:(A?M?D?.*)=)?([^;]+)(?:;(.+))?`
 
-func (pg *pg) advance() (string, error) {
+func (pg *pg) Advance() (string, error) {
 	var e error
 	for {
 		bu := bufio.NewReaderSize(pg.in, 1024)
