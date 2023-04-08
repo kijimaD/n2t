@@ -2,8 +2,8 @@ package parser
 
 import (
 	"bufio"
-	"fmt"
 	"io"
+	"regexp"
 	"strings"
 )
 
@@ -18,6 +18,16 @@ func NewPG(in io.Reader) *pg {
 		in: in,
 	}
 }
+
+type commandKind int
+
+const (
+	A_COMMAND commandKind = iota // @xxx
+	C_COMMAND                    // dest=comp;jump // dest もしくは jump はない可能性がある
+	L_COMMAND                    // (xxx) 疑似コマンド。中身はシンボル
+)
+
+const C_COMMAND_REGEXP = `(?:(A?M?D?.*)=)?([^;]+)(?:;(.+))?`
 
 func (pg *pg) advance() (string, error) {
 	var e error
@@ -39,10 +49,69 @@ func (pg *pg) advance() (string, error) {
 		str = strings.TrimSpace(str)
 		if str != "" {
 			pg.cc = str
-			fmt.Println(str)
-
 			break
 		}
 	}
 	return pg.cc, e
+}
+
+func (pg *pg) commandType() commandKind {
+	if pg.cc[0] == '@' {
+		return A_COMMAND
+	} else if pg.cc[0] == '(' {
+		return L_COMMAND
+	} else {
+		return C_COMMAND
+	}
+}
+
+func (pg *pg) symbol() string {
+	var str string
+	switch pg.commandType() {
+	case A_COMMAND:
+		str = pg.cc[1:]
+	case L_COMMAND:
+		str = pg.cc[1 : len(pg.cc)-1]
+	default:
+		panic("can't symbolize!")
+	}
+
+	return str
+}
+
+// dest=comp;jump
+func (pg *pg) dest() string {
+	var str string
+	if pg.commandType() == C_COMMAND {
+		r := regexp.MustCompile(C_COMMAND_REGEXP)
+		result := r.FindAllStringSubmatch(pg.cc, -1)
+		str = result[0][1]
+	} else {
+		panic("this is not C command!")
+	}
+	return str
+}
+
+func (pg *pg) comp() string {
+	var str string
+	if pg.commandType() == C_COMMAND {
+		r := regexp.MustCompile(C_COMMAND_REGEXP)
+		result := r.FindAllStringSubmatch(pg.cc, -1)
+		str = result[0][2]
+	} else {
+		panic("this is not C command!")
+	}
+	return str
+}
+
+func (pg *pg) jump() string {
+	var str string
+	if pg.commandType() == C_COMMAND {
+		r := regexp.MustCompile(C_COMMAND_REGEXP)
+		result := r.FindAllStringSubmatch(pg.cc, -1)
+		str = result[0][3]
+	} else {
+		panic("this is not C command!")
+	}
+	return str
 }

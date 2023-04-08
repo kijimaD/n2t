@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"os"
 	"testing"
@@ -39,21 +40,76 @@ func TestAdvance(t *testing.T) {
 }
 
 func TestCommandType(t *testing.T) {
+	assert := assert.New(t)
 
+	buf := bytes.NewBufferString("dummy")
+	pg := NewPG(buf)
+
+	pg.cc = "@sum"
+	v := pg.commandType()
+	assert.Equal(A_COMMAND, v)
+
+	pg.cc = "dest=comp;"
+	v = pg.commandType()
+	assert.Equal(C_COMMAND, v)
+
+	pg.cc = "(sym)"
+	v = pg.commandType()
+	assert.Equal(L_COMMAND, v)
 }
 
 func TestSymbol(t *testing.T) {
+	assert := assert.New(t)
 
+	buf := bytes.NewBufferString("dummy")
+	pg := NewPG(buf)
+
+	pg.cc = "@sum"
+	v := pg.symbol()
+	assert.Equal("sum", v)
+
+	pg.cc = "(sym)"
+	v = pg.symbol()
+	assert.Equal("sym", v)
 }
 
 func TestDest(t *testing.T) {
+	assert := assert.New(t)
 
+	buf := bytes.NewBufferString("dummy")
+	pg := NewPG(buf)
+
+	pg.cc = "dest=comp;jump"
+	v := pg.dest()
+	assert.Equal("dest", v)
+
+	pg.cc = "comp;jump"
+	v = pg.dest()
+	assert.Equal("", v)
 }
 
 func TestComp(t *testing.T) {
+	assert := assert.New(t)
 
+	buf := bytes.NewBufferString("dummy")
+	pg := NewPG(buf)
+
+	pg.cc = "dest=comp;jump"
+	v := pg.comp()
+	assert.Equal("comp", v)
 }
 
 func TestJump(t *testing.T) {
+	assert := assert.New(t)
 
+	buf := bytes.NewBufferString("dummy")
+	pg := NewPG(buf)
+
+	pg.cc = "dest=comp;jump"
+	v := pg.jump()
+	assert.Equal("jump", v)
+
+	pg.cc = "dest=comp"
+	v = pg.jump()
+	assert.Equal("", v)
 }
