@@ -32,7 +32,7 @@ func NewASM(in string, out io.Writer) asm {
 	}
 }
 
-func (a *asm) run() {
+func (a *asm) Run() {
 	f, ferr := os.Open(a.in)
 	if ferr != nil {
 		panic(ferr)
@@ -52,6 +52,9 @@ func (a *asm) run() {
 		case parser.C_COMMAND:
 			a.romAddr++
 		case parser.L_COMMAND:
+			// なんでromAddrが必要なんだろう?
+			// ラベルは定義された行数に名前をつけたものだから。
+			// 値が入ったシンボルとは意味が異なる
 			a.symtable.AddEntry(pg.Symbol(), a.romAddr)
 		}
 	}

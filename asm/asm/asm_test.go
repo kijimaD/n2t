@@ -7,12 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRun(t *testing.T) {
+// FIXME: inputがfileなので不便なテストになっている...
+
+func TestRun1(t *testing.T) {
 	assert := assert.New(t)
 	outbuf := &bytes.Buffer{}
 
 	asm := NewASM("../prog.asm", outbuf)
-	asm.run()
+	asm.Run()
 
 	expect := `0000000000010000
 1110111111001000
@@ -34,6 +36,23 @@ func TestRun(t *testing.T) {
 1110101010000111
 0000000000010010
 1110101010000111
+`
+	assert.Equal(expect, outbuf.String())
+}
+
+func TestRun2(t *testing.T) {
+	assert := assert.New(t)
+	outbuf := &bytes.Buffer{}
+
+	asm := NewASM("../test.asm", outbuf)
+	asm.Run()
+
+	expect := `0000000000010000
+1110111111001000
+0000000000010001
+1110101010001000
+1110101010001000
+1110101010001000
 `
 	assert.Equal(expect, outbuf.String())
 }
