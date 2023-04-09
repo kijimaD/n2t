@@ -77,11 +77,11 @@ func TestDest(t *testing.T) {
 	pg := NewPG(buf)
 
 	pg.CC = "dest=comp;jump"
-	v := pg.dest()
+	v := pg.Dest()
 	assert.Equal("dest", v)
 
 	pg.CC = "comp;jump"
-	v = pg.dest()
+	v = pg.Dest()
 	assert.Equal("", v)
 }
 
@@ -92,7 +92,7 @@ func TestComp(t *testing.T) {
 	pg := NewPG(buf)
 
 	pg.CC = "dest=comp;jump"
-	v := pg.comp()
+	v := pg.Comp()
 	assert.Equal("comp", v)
 }
 
@@ -103,10 +103,10 @@ func TestJump(t *testing.T) {
 	pg := NewPG(buf)
 
 	pg.CC = "dest=comp;jump"
-	v := pg.jump()
+	v := pg.Jump()
 	assert.Equal("jump", v)
 
 	pg.CC = "dest=comp"
-	v = pg.jump()
+	v = pg.Jump()
 	assert.Equal("", v)
 }

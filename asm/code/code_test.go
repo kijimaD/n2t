@@ -30,7 +30,7 @@ func TestDest(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
-			got := dest(tt.input)
+			got := Dest(tt.input)
 			assert.Equal(tt.expect, got)
 		})
 	}
@@ -59,7 +59,7 @@ func TestComp(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
-			got := comp(tt.input)
+			got := Comp(tt.input)
 			assert.Equal(tt.expect, got)
 		})
 	}
@@ -88,7 +88,7 @@ func TestJump(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
-			got := jump(tt.input)
+			got := Jump(tt.input)
 			assert.Equal(tt.expect, got)
 		})
 	}

@@ -53,18 +53,18 @@ var jumpMap = map[string]string{
 	"JMP":  "111",
 }
 
-func dest(mnemonic string) string {
+func Dest(mnemonic string) string {
 	if mnemonic == "" {
 		return destMap["null"]
 	}
 	return destMap[mnemonic]
 }
 
-func comp(mnemonic string) string {
+func Comp(mnemonic string) string {
 	return compMap[mnemonic]
 }
 
-func jump(mnemonic string) string {
+func Jump(mnemonic string) string {
 	if mnemonic == "" {
 		return jumpMap["null"]
 	}

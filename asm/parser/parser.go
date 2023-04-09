@@ -80,7 +80,7 @@ func (pg *pg) Symbol() string {
 }
 
 // dest=comp;jump
-func (pg *pg) dest() string {
+func (pg *pg) Dest() string {
 	var str string
 	if pg.CommandType() == C_COMMAND {
 		r := regexp.MustCompile(C_COMMAND_REGEXP)
@@ -92,7 +92,7 @@ func (pg *pg) dest() string {
 	return str
 }
 
-func (pg *pg) comp() string {
+func (pg *pg) Comp() string {
 	var str string
 	if pg.CommandType() == C_COMMAND {
 		r := regexp.MustCompile(C_COMMAND_REGEXP)
@@ -104,7 +104,7 @@ func (pg *pg) comp() string {
 	return str
 }
 
-func (pg *pg) jump() string {
+func (pg *pg) Jump() string {
 	var str string
 	if pg.CommandType() == C_COMMAND {
 		r := regexp.MustCompile(C_COMMAND_REGEXP)
