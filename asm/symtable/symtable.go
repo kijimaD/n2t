@@ -2,13 +2,13 @@ package symtable
 
 type table map[string]int
 
-type symtable struct {
+type Symtable struct {
 	table    table
 	nextAddr int
 }
 
-func NewTable() symtable {
-	var t = symtable{
+func NewTable() Symtable {
+	var t = Symtable{
 		table: table{
 			"SP":     0,
 			"LCL":    1,
@@ -39,20 +39,20 @@ func NewTable() symtable {
 	return t
 }
 
-func (t *symtable) AddEntry(symbol string, address int) {
+func (t *Symtable) AddEntry(symbol string, address int) {
 	t.table[symbol] = address
 }
 
-func (t *symtable) AddVariable(symbol string) {
+func (t *Symtable) AddVariable(symbol string) {
 	t.AddEntry(symbol, t.nextAddr)
 	t.nextAddr++
 }
 
-func (t *symtable) Contains(symbol string) bool {
+func (t *Symtable) Contains(symbol string) bool {
 	_, ok := t.table[symbol]
 	return ok
 }
 
-func (t *symtable) GetAddress(symbol string) int {
+func (t *Symtable) GetAddress(symbol string) int {
 	return t.table[symbol]
 }

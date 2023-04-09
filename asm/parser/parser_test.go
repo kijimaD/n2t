@@ -42,16 +42,16 @@ func TestCommandType(t *testing.T) {
 	buf := bytes.NewBufferString("dummy")
 	pg := NewPG(buf)
 
-	pg.cc = "@sum"
-	v := pg.commandType()
+	pg.CC = "@sum"
+	v := pg.CommandType()
 	assert.Equal(A_COMMAND, v)
 
-	pg.cc = "dest=comp;"
-	v = pg.commandType()
+	pg.CC = "dest=comp;"
+	v = pg.CommandType()
 	assert.Equal(C_COMMAND, v)
 
-	pg.cc = "(sym)"
-	v = pg.commandType()
+	pg.CC = "(sym)"
+	v = pg.CommandType()
 	assert.Equal(L_COMMAND, v)
 }
 
@@ -61,12 +61,12 @@ func TestSymbol(t *testing.T) {
 	buf := bytes.NewBufferString("dummy")
 	pg := NewPG(buf)
 
-	pg.cc = "@sum"
-	v := pg.symbol()
+	pg.CC = "@sum"
+	v := pg.Symbol()
 	assert.Equal("sum", v)
 
-	pg.cc = "(sym)"
-	v = pg.symbol()
+	pg.CC = "(sym)"
+	v = pg.Symbol()
 	assert.Equal("sym", v)
 }
 
@@ -76,11 +76,11 @@ func TestDest(t *testing.T) {
 	buf := bytes.NewBufferString("dummy")
 	pg := NewPG(buf)
 
-	pg.cc = "dest=comp;jump"
+	pg.CC = "dest=comp;jump"
 	v := pg.dest()
 	assert.Equal("dest", v)
 
-	pg.cc = "comp;jump"
+	pg.CC = "comp;jump"
 	v = pg.dest()
 	assert.Equal("", v)
 }
@@ -91,7 +91,7 @@ func TestComp(t *testing.T) {
 	buf := bytes.NewBufferString("dummy")
 	pg := NewPG(buf)
 
-	pg.cc = "dest=comp;jump"
+	pg.CC = "dest=comp;jump"
 	v := pg.comp()
 	assert.Equal("comp", v)
 }
@@ -102,11 +102,11 @@ func TestJump(t *testing.T) {
 	buf := bytes.NewBufferString("dummy")
 	pg := NewPG(buf)
 
-	pg.cc = "dest=comp;jump"
+	pg.CC = "dest=comp;jump"
 	v := pg.jump()
 	assert.Equal("jump", v)
 
-	pg.cc = "dest=comp"
+	pg.CC = "dest=comp"
 	v = pg.jump()
 	assert.Equal("", v)
 }

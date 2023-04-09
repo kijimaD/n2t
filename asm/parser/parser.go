@@ -8,14 +8,14 @@ import (
 )
 
 type pg struct {
-	cc string // current command
-	in io.Reader
+	CC string // current command
+	IN io.Reader
 }
 
 func NewPG(in io.Reader) *pg {
 	return &pg{
-		cc: "",
-		in: in,
+		CC: "",
+		IN: in,
 	}
 }
 
@@ -32,11 +32,11 @@ const C_COMMAND_REGEXP = `(?:(A?M?D?.*)=)?([^;]+)(?:;(.+))?`
 func (pg *pg) Advance() (string, error) {
 	var e error
 	for {
-		bu := bufio.NewReaderSize(pg.in, 1024)
+		bu := bufio.NewReaderSize(pg.IN, 1024)
 		line, _, err := bu.ReadLine()
 		if err == io.EOF {
 			e = err
-			pg.cc = ""
+			pg.CC = ""
 			break
 		}
 
@@ -48,30 +48,30 @@ func (pg *pg) Advance() (string, error) {
 
 		str = strings.TrimSpace(str)
 		if str != "" {
-			pg.cc = str
+			pg.CC = str
 			break
 		}
 	}
-	return pg.cc, e
+	return pg.CC, e
 }
 
-func (pg *pg) commandType() commandKind {
-	if pg.cc[0] == '@' {
+func (pg *pg) CommandType() commandKind {
+	if pg.CC[0] == '@' {
 		return A_COMMAND
-	} else if pg.cc[0] == '(' {
+	} else if pg.CC[0] == '(' {
 		return L_COMMAND
 	} else {
 		return C_COMMAND
 	}
 }
 
-func (pg *pg) symbol() string {
+func (pg *pg) Symbol() string {
 	var str string
-	switch pg.commandType() {
+	switch pg.CommandType() {
 	case A_COMMAND:
-		str = pg.cc[1:]
+		str = pg.CC[1:]
 	case L_COMMAND:
-		str = pg.cc[1 : len(pg.cc)-1]
+		str = pg.CC[1 : len(pg.CC)-1]
 	default:
 		panic("can't symbolize!")
 	}
@@ -82,9 +82,9 @@ func (pg *pg) symbol() string {
 // dest=comp;jump
 func (pg *pg) dest() string {
 	var str string
-	if pg.commandType() == C_COMMAND {
+	if pg.CommandType() == C_COMMAND {
 		r := regexp.MustCompile(C_COMMAND_REGEXP)
-		result := r.FindAllStringSubmatch(pg.cc, -1)
+		result := r.FindAllStringSubmatch(pg.CC, -1)
 		str = result[0][1]
 	} else {
 		panic("this is not C command!")
@@ -94,9 +94,9 @@ func (pg *pg) dest() string {
 
 func (pg *pg) comp() string {
 	var str string
-	if pg.commandType() == C_COMMAND {
+	if pg.CommandType() == C_COMMAND {
 		r := regexp.MustCompile(C_COMMAND_REGEXP)
-		result := r.FindAllStringSubmatch(pg.cc, -1)
+		result := r.FindAllStringSubmatch(pg.CC, -1)
 		str = result[0][2]
 	} else {
 		panic("this is not C command!")
@@ -106,9 +106,9 @@ func (pg *pg) comp() string {
 
 func (pg *pg) jump() string {
 	var str string
-	if pg.commandType() == C_COMMAND {
+	if pg.CommandType() == C_COMMAND {
 		r := regexp.MustCompile(C_COMMAND_REGEXP)
-		result := r.FindAllStringSubmatch(pg.cc, -1)
+		result := r.FindAllStringSubmatch(pg.CC, -1)
 		str = result[0][3]
 	} else {
 		panic("this is not C command!")
