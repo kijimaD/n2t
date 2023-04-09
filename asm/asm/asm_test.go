@@ -9,9 +9,9 @@ import (
 
 func TestRun(t *testing.T) {
 	assert := assert.New(t)
-	buf := &bytes.Buffer{}
+	outbuf := &bytes.Buffer{}
 
-	asm := NewASM(buf)
+	asm := NewASM("../prog.asm", outbuf)
 	asm.run()
 
 	expect := `0000000000010000
@@ -35,5 +35,5 @@ func TestRun(t *testing.T) {
 0000000000010010
 1110101010000111
 `
-	assert.Equal(expect, buf.String())
+	assert.Equal(expect, outbuf.String())
 }

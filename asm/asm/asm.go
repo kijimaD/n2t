@@ -13,25 +13,27 @@ import (
 	"github.com/kijimaD/n2t/asm/symtable"
 )
 
+// 数字だけの場合は値(10進)、文字が入っている場合はシンボル
+var SYM_REGEXP = `([0-9]+)|([0-9a-zA-Z_\.\$:]+)`
+
 type asm struct {
 	romAddr  int
 	symtable symtable.Symtable
+	in       string // FIXME: Readerにしたいけど、2回読み込みでseekをリセットする方法がわからない
 	out      io.Writer
 }
 
-func NewASM(out io.Writer) asm {
+func NewASM(in string, out io.Writer) asm {
 	return asm{
 		romAddr:  0,
 		symtable: symtable.NewTable(),
+		in:       in,
 		out:      out,
 	}
 }
 
-// 数字だけの場合は値(10進)、文字が入っている場合はシンボル
-var SYM_REGEXP = `([0-9]+)|([0-9a-zA-Z_\.\$:]+)`
-
 func (a *asm) run() {
-	f, ferr := os.Open("../prog.asm")
+	f, ferr := os.Open(a.in)
 	if ferr != nil {
 		panic(ferr)
 	}
@@ -55,7 +57,7 @@ func (a *asm) run() {
 	}
 
 	// FIXME: Readlineのカウンタをリセットしている
-	f, ferr = os.Open("../prog.asm")
+	f, ferr = os.Open(a.in)
 	if ferr != nil {
 		panic(ferr)
 	}
