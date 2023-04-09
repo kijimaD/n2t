@@ -54,7 +54,7 @@ func (a *asm) Run() {
 		case parser.L_COMMAND:
 			// なんでromAddrが必要なんだろう?
 			// ラベルは定義された行数に名前をつけたものだから。
-			// 値が入ったシンボルとは意味が異なる
+			// これは疑似コマンドの次の行のコマンドの位置を示すラベルシンボルであって、値が入った変数シンボルとは意味が異なる
 			a.symtable.AddEntry(pg.Symbol(), a.romAddr)
 		}
 	}

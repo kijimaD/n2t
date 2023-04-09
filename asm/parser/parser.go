@@ -22,9 +22,9 @@ func NewPG(in io.Reader) *pg {
 type commandKind int
 
 const (
-	A_COMMAND commandKind = iota // @xxx
-	C_COMMAND                    // dest=comp;jump // dest もしくは jump はない可能性がある
-	L_COMMAND                    // (xxx) 疑似コマンド。中身はシンボル
+	A_COMMAND commandKind = iota // アドレス命令 @xxx
+	C_COMMAND                    // 計算命令 dest=comp;jump // dest もしくは jump はない可能性がある
+	L_COMMAND                    // 疑似コマンド (xxx) シンボルxxxを定義する。アセンブリプログラムの他のところで用いることができる。定義される前の行でも使用できる
 )
 
 const C_COMMAND_REGEXP = `(?:(A?M?D?.*)=)?([^;]+)(?:;(.+))?`

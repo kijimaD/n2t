@@ -2,6 +2,8 @@ package symtable
 
 type table map[string]int
 
+// 3種類のシンボルがある。組み込みシンボル、ラベルシンボル、変数シンボル
+
 type Symtable struct {
 	table    table
 	nextAddr int
@@ -9,6 +11,8 @@ type Symtable struct {
 
 func NewTable() Symtable {
 	var t = Symtable{
+		// 最初の5つは指定するためのシンボルが2つある。
+		// R2とARGはRAM[2]を参照することに用いることができる
 		table: table{
 			"SP":     0,
 			"LCL":    1,
@@ -34,7 +38,7 @@ func NewTable() Symtable {
 			"SCREEN": 16384,
 			"KBD":    24576,
 		},
-		nextAddr: 16,
+		nextAddr: 16, // 変数シンボルのためのアドレスは16から始まる
 	}
 	return t
 }
