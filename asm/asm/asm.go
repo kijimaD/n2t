@@ -16,14 +16,14 @@ import (
 type asm struct {
 	romAddr  int
 	symtable symtable.Symtable
-	Out      io.Writer
+	out      io.Writer
 }
 
 func NewASM(out io.Writer) asm {
 	return asm{
 		romAddr:  0,
 		symtable: symtable.NewTable(),
-		Out:      out,
+		out:      out,
 	}
 }
 
@@ -97,7 +97,7 @@ func (a *asm) run() {
 		}
 
 		if cmdType != parser.L_COMMAND {
-			fmt.Fprintf(a.Out, "%s\n", bincode)
+			fmt.Fprintf(a.out, "%s\n", bincode)
 		}
 	}
 }
