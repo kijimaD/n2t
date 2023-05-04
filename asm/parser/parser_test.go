@@ -1,10 +1,9 @@
 package parser
 
 import (
-	"bufio"
 	"bytes"
 	"io"
-	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,10 +12,18 @@ import (
 func TestAdvance(t *testing.T) {
 	assert := assert.New(t)
 
-	f, _ := os.Open("../test.asm")
-	buf := bufio.NewReaderSize(f, 1024)
+	inbuf := strings.NewReader(`@i
+        M=1
+        @sum
+        M=0
 
-	pg := NewPG(buf)
+        M=0
+
+        M=0 // comment
+        // comment
+	`)
+
+	pg := NewPG(inbuf)
 
 	v, _ := pg.Advance()
 	assert.Equal("@i", v)

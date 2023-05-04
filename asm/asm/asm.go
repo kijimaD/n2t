@@ -1,10 +1,9 @@
 package asm
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
 	"io"
-	"os"
 	"regexp"
 	"strconv"
 
@@ -19,11 +18,11 @@ var SYM_REGEXP = `([0-9]+)|([0-9a-zA-Z_\.\$:]+)`
 type asm struct {
 	romAddr  int
 	symtable symtable.Symtable
-	in       string // FIXME: Readerにしたいけど、2回読み込みでseekをリセットする方法がわからない
+	in       io.Reader
 	out      io.Writer
 }
 
-func NewASM(in string, out io.Writer) asm {
+func NewASM(in io.Reader, out io.Writer) asm {
 	return asm{
 		romAddr:  0,
 		symtable: symtable.NewTable(),
@@ -33,12 +32,7 @@ func NewASM(in string, out io.Writer) asm {
 }
 
 func (a *asm) Run() {
-	f, ferr := os.Open(a.in)
-	if ferr != nil {
-		panic(ferr)
-	}
-	buf := bufio.NewReaderSize(f, 1024)
-	pg := parser.NewPG(buf)
+	pg := parser.NewPG(a.in)
 
 	// シンボルテーブル追加
 	for {
@@ -59,13 +53,10 @@ func (a *asm) Run() {
 		}
 	}
 
-	// FIXME: Readlineのカウンタをリセットしている
-	f, ferr = os.Open(a.in)
-	if ferr != nil {
-		panic(ferr)
+	err := ResetReader(a.in)
+	if err != nil {
+		panic(err)
 	}
-	buf = bufio.NewReaderSize(f, 1024)
-	pg.IN = buf
 	r := regexp.MustCompile(SYM_REGEXP)
 
 	// シンボル解決
@@ -105,4 +96,13 @@ func (a *asm) Run() {
 			fmt.Fprintf(a.out, "%s\n", bincode)
 		}
 	}
+}
+
+// Readerの読み込み状態を元に戻す
+func ResetReader(r io.Reader) error {
+	if seeker, ok := r.(io.Seeker); ok {
+		_, err := seeker.Seek(0, io.SeekStart) // オフセットを0に戻す
+		return err
+	}
+	return errors.New("io.Reader does not implement io.Seeker")
 }

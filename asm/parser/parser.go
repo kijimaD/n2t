@@ -8,14 +8,16 @@ import (
 )
 
 type pg struct {
-	CC string // current command
-	IN io.Reader
+	CC    string // current command
+	Bufin bufio.Reader
 }
 
 func NewPG(in io.Reader) *pg {
+	bufin := bufio.NewReader(in)
+
 	return &pg{
-		CC: "",
-		IN: in,
+		CC:    "",
+		Bufin: *bufin,
 	}
 }
 
@@ -32,8 +34,8 @@ const C_COMMAND_REGEXP = `(?:(A?M?D?.*)=)?([^;]+)(?:;(.+))?`
 func (pg *pg) Advance() (string, error) {
 	var e error
 	for {
-		bu := bufio.NewReaderSize(pg.IN, 1024)
-		line, _, err := bu.ReadLine()
+		line, err := pg.Bufin.ReadString('\n')
+
 		if err == io.EOF {
 			e = err
 			pg.CC = ""
